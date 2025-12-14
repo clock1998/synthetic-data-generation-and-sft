@@ -29,7 +29,7 @@ class QAGenerator:
         
         # Determine device
         if device is None:
-            self.device = "cuda" if torch.cuda.is_available() else "cpu"
+            self.device = "cuda"
         else:
             self.device = device
         
