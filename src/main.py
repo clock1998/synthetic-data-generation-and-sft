@@ -1,8 +1,10 @@
+from unsloth import FastLanguageModel
+from trl import SFTTrainer  # Import from trl instead
 from web_scraper import ArxivScraper
 from qa_generator import QAGenerator
-# from unsloth import FastLanguageModel, SFTTrainer
 from transformers import AutoTokenizer, TrainingArguments
 from datasets import load_dataset
+from peft import LoraConfig
 import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -43,34 +45,50 @@ def main():
     logger.info(f"QA Results saved to {qa_output_file}")
 
     logger.info(f"Start SFT pipeline")
-    # # Load the base LLaMA 3 7B model in 4-bit mode (dynamic 4-bit quantization)
-    # model_name = "unsloth/llama-3.1-7b-unsloth-bnb-4bit"
-    # model = FastLanguageModel.from_pretrained(model_name)
-    # tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False)
+    # Load the base LLaMA 3 model
+    model_name = "unsloth/Meta-Llama-3.1-8B-Instruct"
 
-    # # Load our synthetic Q&A dataset
-    # dataset = load_dataset("json", data_files="synthetic_qa.jsonl", split="train")
+    # Let unsloth handle model and tokenizer loading
+    model, tokenizer = FastLanguageModel.from_pretrained(model_name)
 
-    # # Initialize the trainer for Supervised Fine-Tuning (SFT)
-    # trainer = SFTTrainer(
-    #     model=model,
-    #     tokenizer=tokenizer,
-    #     train_dataset=dataset,
-    #     dataset_text_field="text",
-    #     args=TrainingArguments(
-    #         output_dir="llama3-7b-qlora-finetuned",
-    #         per_device_train_batch_size=4,   # small batch size for Colab GPU
-    #         gradient_accumulation_steps=4,   # accumulate gradients to simulate larger batch
-    #         num_train_epochs=2,
-    #         learning_rate=2e-4,
-    #         fp16=True,
-    #         logging_steps=50,
-    #         save_strategy="epoch"
-    #     )
-    # )
+    # Add LoRA adapters for efficient fine-tuning
+    model = FastLanguageModel.get_peft_model(
+        model,
+        r=16,  # LoRA rank
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
+                       "gate_proj", "up_proj", "down_proj"],
+        lora_alpha=16,
+        lora_dropout=0,
+        bias="none",
+        use_gradient_checkpointing="unsloth",
+        random_state=3407,
+        use_rslora=False,
+        loftq_config=None,
+    )
 
-    # trainer.train()
-    # model.save_pretrained("llama3-7b-qlora-finetuned")
+    # Load our synthetic Q&A dataset
+    dataset = load_dataset("json", data_files=qa_output_file, split="train")
+
+    # Initialize the trainer for Supervised Fine-Tuning (SFT)
+    trainer = SFTTrainer(
+        model=model,
+        tokenizer=tokenizer,
+        train_dataset=dataset,
+        dataset_text_field="text",
+        args=TrainingArguments(
+            output_dir="Ministral-3-8B-Instruct-2512",
+            per_device_train_batch_size=4,
+            gradient_accumulation_steps=4,
+            num_train_epochs=2,
+            learning_rate=2e-4,
+            fp16=False,  # Keep as False for non-quantized model
+            logging_steps=50,
+            save_strategy="epoch"
+        )
+    )
+
+    trainer.train()
+    model.save_pretrained("Ministral-3-8B-Instruct-2512")
 
 if __name__ == "__main__":
     main()
