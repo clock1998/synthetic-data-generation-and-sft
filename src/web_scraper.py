@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 import logging
 from bs4 import BeautifulSoup
 import re
+import json
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -155,7 +156,8 @@ class ArxivScraper:
             article_url (str): URL of the article page
             
         Returns:
-            str: Article content with personal identifications (such as names and emails) removed.
+            dict: Dictionary containing 'title', 'author', and 'content' fields,
+                  with personal identifications (such as names and emails) removed.
         """
         try:
             logger.info(f"Scraping article: {article_url}")
@@ -176,11 +178,16 @@ class ArxivScraper:
                 include_links=False
             )
 
-            # Remove personal identification information
+            # Remove personal identification information from content
             if extracted_content:
                 extracted_content = self.remove_personal_identification(extracted_content)
+            else:
+                extracted_content = ""
 
-            return extracted_content
+            # Return as dictionary
+            return {
+                'article': extracted_content
+            }
 
         except Exception as e:
             logger.error(f"Error scraping article {article_url}: {str(e)}")
@@ -188,16 +195,16 @@ class ArxivScraper:
 
     def save_articles(self, articles, filename):
         """
-        Save articles to a JSON file
+        Save articles to a JSON file (as a JSON array)
         
         Args:
-            articles (list): List of article data
+            articles (list): List of article dictionaries with 'title', 'author', and 'content'
             filename (str): Output filename
         """
         try:
             with open(filename, 'w', encoding='utf-8') as f:
-                for article in articles:
-                    f.write(article + "\n")
+                # Write as a JSON array instead of JSONL format
+                json.dump(articles, f, ensure_ascii=False, indent=2)
             logger.info(f"Saved {len(articles)} articles to {filename}")
         except Exception as e:
             logger.error(f"Error saving articles to {filename}: {str(e)}")
