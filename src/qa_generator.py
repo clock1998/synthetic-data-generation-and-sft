@@ -259,9 +259,46 @@ class QAGenerator:
             filename (str): Output filename
         """
         try:
-            with open(filename, 'w', encoding='utf-8') as f:
-                text = json.dumps(qa_paires, ensure_ascii=False)
-                f.write(text)                    
+            system_prompt = "You are a helpful academic Q&A assistant specialized in scholarly content."
+            data = []
+
+            # Suppose qa_paires is a list of all generated QAs, where each QA is a dict: {"question": ..., "answer": ...}
+            for qa in qa_paires:
+                user_q = qa["question"]
+                assistant_a = qa["answer"]
+                # Compose the prompt with system, user, assistant roles
+                full_prompt = f"<|system|>{system_prompt}<|user|>{user_q}<|assistant|>{assistant_a}"
+                data.append({"text": full_prompt})
+            with open(filename, "w") as outfile:
+                for entry in data:
+                    outfile.write(json.dumps(entry) + "\n")
+                  
         except Exception as e:
             logger.error(f"Error saving articles to {filename}: {str(e)}")
 
+
+    def _save_qa_pairs_json(self, qa_paires: List[Dict], filename: str):
+        """
+        Save QA to JSONL file
+        
+        Args:
+            articles (List[Dict]): List of QA dictionaries
+            filename (str): Output filename
+        """
+        try:
+            system_prompt = "You are a helpful academic Q&A assistant specialized in scholarly content."
+            data = []
+
+            # Suppose qa_paires is a list of all generated QAs, where each QA is a dict: {"question": ..., "answer": ...}
+            for qa in qa_paires:
+                user_q = qa["question"]
+                assistant_a = qa["answer"]
+                # Compose the prompt with system, user, assistant roles
+                full_prompt = f"<|system|>{system_prompt}<|user|>{user_q}<|assistant|>{assistant_a}"
+                data.append({"text": full_prompt})
+            with open(filename, "w") as outfile:
+                for entry in data:
+                    outfile.write(json.dumps(entry) + "\n")
+                  
+        except Exception as e:
+            logger.error(f"Error saving articles to {filename}: {str(e)}")
