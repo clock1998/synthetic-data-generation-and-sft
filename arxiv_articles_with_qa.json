@@ -1,0 +1,62 @@
+[
+    {
+        "question": "What is the name of the full-spectrum benchmark introduced in the article for evaluating the fidelity of generated world models in driving environments?",
+        "answer": "WorldLens"
+    },
+    {
+        "question": "What are the five aspects covered by WorldLens for evaluating the performance of a world model?",
+        "answer": "Generation, Reconstruction, Action-Following, Downstream Task, and Human Preference"
+    },
+    {
+        "question": "What are the dimensions that WorldLens aims to cover across these five aspects?",
+        "answer": "Visual realism, geometric consistency, physical plausibility, and functional reliability"
+    },
+    {
+        "question": "Why was WorldLens created according to the article?",
+        "answer": "To provide a unified way to assess whether generated worlds preserve geometry, obey physics, or support reliable control"
+    },
+    {
+        "question": "What is the purpose of WorldLens-26K and WorldLens-Agent as mentioned in the article?",
+        "answer": "WorldLens-26K is a large-scale dataset of human-annotated videos with numerical scores and textual rationales, and WorldLens-Agent is an evaluation model distilled from these annotations to enable scalable, explainable scoring"
+    },
+    {
+        "question": "What is the title of the proposed framework in this article?",
+        "answer": "The title of the proposed framework is SceneMaker"
+    },
+    {
+        "question": "What are the main challenges addressed by the SceneMaker framework?",
+        "answer": "The SceneMaker framework addresses the challenges of producing high-quality geometry and accurate poses under severe occlusion and open-set settings"
+    },
+    {
+        "question": "What is the purpose of decoupling the de-occlusion model from 3D object generation in SceneMaker?",
+        "answer": "The de-occlusion model is decoupled from 3D object generation in SceneMaker to enhance it by leveraging image datasets and collected de-occlusion datasets for more diverse open-set occlusion patterns"
+    },
+    {
+        "question": "What are some applications of open-set 3D scene generation mentioned in the article?",
+        "answer": "Applications of open-set 3D scene generation include 3D asset creation, simulation environment construction, and 3D perception for decision-making"
+    },
+    {
+        "question": "What is the significance of the open-set 3D scene dataset constructed in this work?",
+        "answer": "The open-set 3D scene dataset constructed in this work is intended to further extend the generalization of the pose estimation model"
+    },
+    {
+        "question": "What is the focus of the research discussed in the article?",
+        "answer": "The focus of the research is on developing a navigation foundation model (NFMs) that can navigate dynamic urban environments more effectively, by incorporating stereo inputs and explicit mid-level vision modules such as depth estimation and dense pixel tracking."
+    },
+    {
+        "question": "Why is the use of monocular vision alone ineffective for navigation in dynamic and unstructured settings?",
+        "answer": "The use of monocular vision alone is ineffective because it suffers from depth-scale ambiguity in monocular views, which limits accurate spatial reasoning, and it requires large amounts of pixel-to-action supervision that are difficult to obtain."
+    },
+    {
+        "question": "What advantage does the use of stereo inputs provide in the proposed model StereoWalker?",
+        "answer": "The use of stereo inputs in StereoWalker resolves the depth-scale ambiguity, which is crucial for precise geometric and dynamic understanding in dynamic and unstructured settings."
+    },
+    {
+        "question": "How does the performance of StereoWalker compare to the state-of-the-art in the field?",
+        "answer": "StereoWalker achieves a comparable performance as the state-of-the-art using only 1.5% of the training data, and surpasses the state-of-the-art using the full data."
+    },
+    {
+        "question": "What is the significance of the large stereo navigation dataset curated in this research?",
+        "answer": "The large stereo navigation dataset curated in this research is significant because it supports the training of StereoWalker and facilitates future research in the field."
+    }
+]
