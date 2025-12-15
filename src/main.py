@@ -70,13 +70,14 @@ def main():
     dataset = load_dataset("json", data_files=qa_output_file, split="train")
 
     # Initialize the trainer for Supervised Fine-Tuning (SFT)
+    outputdir = "Meta-Llama-3.1-8B-Instruct"
     trainer = SFTTrainer(
         model=model,
         tokenizer=tokenizer,
         train_dataset=dataset,
         dataset_text_field="text",
         args=TrainingArguments(
-            output_dir="Ministral-3-8B-Instruct-2512",
+            output_dir=outputdir,
             per_device_train_batch_size=4,
             gradient_accumulation_steps=4,
             num_train_epochs=2,
@@ -88,7 +89,7 @@ def main():
     )
 
     trainer.train()
-    model.save_pretrained("Ministral-3-8B-Instruct-2512")
+    model.save_pretrained(outputdir)
 
 if __name__ == "__main__":
     main()
