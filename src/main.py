@@ -70,7 +70,7 @@ def main():
     dataset = load_dataset("json", data_files=qa_output_file, split="train")
 
     # Initialize the trainer for Supervised Fine-Tuning (SFT)
-    outputdir = "Meta-Llama-3.1-8B-Instruct"
+    outputdir = "Meta-Llama-3.1-8B-Instruct-Fine-Tuned"
     trainer = SFTTrainer(
         model=model,
         tokenizer=tokenizer,
